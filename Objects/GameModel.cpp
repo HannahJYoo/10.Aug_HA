@@ -152,20 +152,19 @@ void GameModel::SetBoundSpace()
 	float min = -std::numeric_limits<float>().infinity(), max = std::numeric_limits<float>().infinity();
 	D3DXVECTOR3 vecMin(max, max, max), vecMax(min, min, min);
 
-	for (ModelMesh* modelMesh : model->Meshes())
-	{
+	for (ModelMesh* modelMesh : model->Meshes()) {
 		ModelBone* bone = modelMesh->ParentBone();
 		D3DXMATRIX w = bone->Global();
-		for (ModelMeshPart* part : modelMesh->MeshPart())
-		{
+
+		for (ModelMeshPart* part : modelMesh->MeshPart()) {
 			vector<ModelVertexType> vertices = part->Vertices();
-			for (ModelVertexType data : vertices)
-			{
+
+			for (ModelVertexType data : vertices) {
 				D3DXVECTOR3 pos = data.Position;
 				D3DXVec3TransformCoord(&pos, &pos, &w);
 				if (vecMin.x > pos.x) vecMin.x = pos.x;
 				if (vecMax.x < pos.x) vecMax.x = pos.x;
-				
+
 				if (vecMin.y > pos.y) vecMin.y = pos.y;
 				if (vecMax.y < pos.y) vecMax.y = pos.y;
 
@@ -175,11 +174,12 @@ void GameModel::SetBoundSpace()
 		}
 	}
 
+
 	this->vecMin = vecMin;
 	this->vecMax = vecMax;
 	center = (vecMax + vecMin) / 2.0f;
 
-	// x와 y중에 최대값으로 계산할꼬임.
+	//x,y,z 가장 큰 값으로
 	D3DXVECTOR3 temp = vecMax - center;
 	if (temp.x < 0) temp.x *= -1;
 	if (temp.y < 0) temp.y *= -1;
@@ -188,7 +188,6 @@ void GameModel::SetBoundSpace()
 	radius = max(radius, temp.z);
 
 	boundSize = temp * 2.0f;
-
 
 	boundSpace.reserve(8);
 	boundSpace.push_back(D3DXVECTOR3(vecMin.x, vecMin.y, vecMin.z));
